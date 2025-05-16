@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan obstacle;
+chan obstacleStop;
+chan obstacleSlow;
+chan obstacleManeouver;</declaration>
+	<template>
+		<name x="5" y="5">Leader</name>
+		<declaration>// Place local declarations here.
+int danger = 0;</declaration>
+		<location id="id0" x="-2133" y="-544">
+			<name x="-2218" y="-518">ObstacleDetected</name>
+		</location>
+		<location id="id1" x="-2286" y="-544">
+			<name x="-2303" y="-527">Safe</name>
+		</location>
+		<location id="id2" x="-1929" y="-654">
+			<name x="-1904" y="-663">Stop</name>
+		</location>
+		<location id="id3" x="-1929" y="-544">
+			<name x="-1963" y="-527">SlowDown</name>
+		</location>
+		<location id="id4" x="-1929" y="-442">
+			<name x="-1963" y="-425">Maneouver</name>
+		</location>
+		<init ref="id1"/>
+		<transition id="id5">
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-1921" y="-603">obstacleStop!</label>
+		</transition>
+		<transition id="id6">
+			<source ref="id0"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-2065" y="-467">danger==1</label>
+			<label kind="synchronisation" x="-2117" y="-442">obstacleManeouver!</label>
+			<label kind="assignment" x="-2014" y="-501">danger=0</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-2031" y="-586">danger==2</label>
+			<label kind="synchronisation" x="-2074" y="-569">obstacleSlow!</label>
+			<label kind="assignment" x="-2040" y="-544">danger=0</label>
+		</transition>
+		<transition id="id8">
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-2091" y="-654">danger==3</label>
+			<label kind="synchronisation" x="-2150" y="-620">obstacleStop!</label>
+			<label kind="assignment" x="-2057" y="-680">danger=0</label>
+		</transition>
+		<transition id="id9">
+			<source ref="id1"/>
+			<target ref="id0"/>
+		</transition>
+	</template>
+	<template>
+		<name>FollowingTruck</name>
+		<declaration>
+</declaration>
+		<location id="id10" x="-185" y="85">
+			<name x="-195" y="102">Stop</name>
+			<urgent/>
+		</location>
+		<location id="id11" x="-8" y="-68">
+			<name x="-18" y="-102">Maneouver</name>
+		</location>
+		<location id="id12" x="-204" y="-68">
+			<name x="-263" y="-119">SlowDown</name>
+		</location>
+		<location id="id13" x="-433" y="-68">
+		</location>
+		<init ref="id13"/>
+		<transition id="id14">
+			<source ref="id13"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-408" y="17">obstacleStop?</label>
+		</transition>
+		<transition id="id15">
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-391" y="-93">obstacleSlow!</label>
+		</transition>
+		<transition id="id16">
+			<source ref="id12"/>
+			<target ref="id10"/>
+		</transition>
+		<transition id="id17">
+			<source ref="id12"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-178" y="-102">obstacleManeouver?</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Process = Leader();
+// List one or more processes to be composed into a system.
+system Process,FollowingTruck;
+</system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; deadlock</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2025-05-16 04:03:14 +0200">
+			</result>
+		</query>
+	</queries>
+</nta>
