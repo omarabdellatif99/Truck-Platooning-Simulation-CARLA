@@ -2,116 +2,253 @@
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
 <nta>
 	<declaration>// Place global declarations here.
-chan Request;
-chan couple;
-chan abort;
-chan slowdown;
-chan safeDistance;</declaration>
+chan initplatoon;
+chan Req_Couple;
+chan SlowDown;
+chan Keep_Distance;
+chan Distance_Approved;
+bool reqCouple = false;
+bool obstacleFront = false;
+bool platoonstatus = true;
+bool safe_distance = false;
+bool approved = true;
+</declaration>
 	<template>
-		<name x="5" y="5">RequestingTruck</name>
+		<name x="5" y="5">PlatoonManager</name>
 		<declaration>// Place local declarations here.
-clock cool_down;</declaration>
-		<location id="id0" x="-654" y="-382">
-			<name x="-680" y="-425">Couple</name>
+</declaration>
+		<location id="id0" x="-773" y="-442">
 		</location>
-		<location id="id1" x="-467" y="-263">
-			<name x="-484" y="-246">Abort</name>
+		<location id="id1" x="-459" y="-280">
 		</location>
-		<location id="id2" x="-654" y="-263">
+		<location id="id2" x="-756" y="-280">
 		</location>
-		<location id="id3" x="-858" y="-263">
+		<location id="id3" x="-1003" y="-195">
 		</location>
-		<init ref="id3"/>
+		<init ref="id2"/>
 		<transition id="id4">
 			<source ref="id2"/>
 			<target ref="id0"/>
-			<label kind="synchronisation" x="-637" y="-340">couple?</label>
+			<label kind="guard" x="-756" y="-391">safe_distance == true</label>
+			<label kind="synchronisation" x="-748" y="-374">Keep_Distance!</label>
+			<label kind="assignment" x="-756" y="-357">safe_distance == false</label>
 		</transition>
 		<transition id="id5">
-			<source ref="id2"/>
-			<target ref="id1"/>
-			<label kind="synchronisation" x="-595" y="-289">abort?</label>
-		</transition>
-		<transition id="id6">
 			<source ref="id3"/>
 			<target ref="id2"/>
-			<label kind="guard" x="-807" y="-255">cool_down &gt; 5</label>
-			<label kind="synchronisation" x="-782" y="-289">Request!</label>
+			<label kind="synchronisation" x="-935" y="-212">initplatoon?</label>
+		</transition>
+		<transition id="id6">
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-663" y="-306">initplatoon!</label>
+		</transition>
+	</template>
+	<template>
+		<name>CommChannel</name>
+		<declaration>clock cool_down;</declaration>
+		<location id="id7" x="-382" y="170">
+		</location>
+		<location id="id8" x="-688" y="170">
+		</location>
+		<location id="id9" x="-289" y="59">
+		</location>
+		<location id="id10" x="-42" y="-280">
+		</location>
+		<location id="id11" x="-246" y="-255">
+			<name x="-229" y="-297">requestcouple</name>
+		</location>
+		<location id="id12" x="-93" y="-102">
+			<name x="-144" y="-76">initiateplatoon</name>
+		</location>
+		<location id="id13" x="-399" y="-102">
+			<name x="-527" y="-76">Reciever</name>
+		</location>
+		<location id="id14" x="-501" y="-221">
+			<name x="-612" y="-255">externaltruck</name>
+		</location>
+		<location id="id15" x="-637" y="-85">
+		</location>
+		<location id="id16" x="-527" y="59">
+		</location>
+		<init ref="id13"/>
+		<transition id="id17">
+			<source ref="id12"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-271" y="-55">cool_down &gt; 2</label>
+			<label kind="assignment" x="-271" y="-21">cool_down = 0</label>
+		</transition>
+		<transition id="id18">
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-595" y="144">cool_down &gt; 3</label>
+			<label kind="synchronisation" x="-629" y="178">Distance_Approved?</label>
+		</transition>
+		<transition id="id19">
+			<source ref="id16"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-731" y="59">safe_distance == true</label>
+			<label kind="synchronisation" x="-756" y="93">Distance_Approved!</label>
+		</transition>
+		<transition id="id20">
+			<source ref="id9"/>
+			<target ref="id16"/>
+			<label kind="guard" x="-493" y="25">safe_distance == false</label>
+			<label kind="synchronisation" x="-476" y="68">Keep_Distance?</label>
+		</transition>
+		<transition id="id21">
+			<source ref="id13"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-340" y="-59">safe_distance == true</label>
+			<label kind="synchronisation" x="-297" y="-34">Keep_Distance!</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id16"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-671" y="-17">safe_distance == false</label>
+			<label kind="synchronisation" x="-569" y="-51">Keep_Distance?</label>
+			<label kind="assignment" x="-688" y="8">safe_distance = true</label>
+		</transition>
+		<transition id="id23">
+			<source ref="id11"/>
+			<target ref="id10"/>
+			<label kind="guard" x="-229" y="-314">reqCouple == true</label>
+			<label kind="synchronisation" x="-204" y="-255">SlowDown!</label>
+		</transition>
+		<transition id="id24">
+			<source ref="id15"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-586" y="-119">SlowDown?</label>
+		</transition>
+		<transition id="id25">
+			<source ref="id13"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-297" y="-195">cool_down &lt; 5</label>
+			<label kind="synchronisation" x="-306" y="-170">Req_Couple!</label>
+		</transition>
+		<transition id="id26">
+			<source ref="id14"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-459" y="-195">cool_down &gt; 5</label>
+			<label kind="synchronisation" x="-527" y="-161">Req_Couple!</label>
+		</transition>
+		<transition id="id27">
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-381" y="-136">cool_down &gt; 4</label>
+			<label kind="synchronisation" x="-297" y="-85">initplatoon?</label>
+		</transition>
+	</template>
+	<template>
+		<name>FailureManager</name>
+		<location id="id28" x="0" y="0">
+		</location>
+		<init ref="id28"/>
+	</template>
+	<template>
+		<name>ObstacleManager</name>
+		<location id="id29" x="0" y="0">
+		</location>
+		<init ref="id29"/>
+	</template>
+	<template>
+		<name>SensorSuite</name>
+		<location id="id30" x="-467" y="-127">
+		</location>
+		<location id="id31" x="-212" y="-59">
+		</location>
+		<location id="id32" x="0" y="0">
+		</location>
+		<init ref="id32"/>
+		<transition id="id33">
+			<source ref="id31"/>
+			<target ref="id30"/>
+			<label kind="guard" x="-399" y="-136">approved == true</label>
+			<label kind="synchronisation" x="-433" y="-76">Distance_Approved!</label>
+		</transition>
+		<transition id="id34">
+			<source ref="id32"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-195" y="-8">Distance_Approved?</label>
 		</transition>
 	</template>
 	<template>
 		<name>FollowingTrucks</name>
 		<declaration>int distance = 10;</declaration>
-		<location id="id7" x="-93" y="-212">
-			<name x="-103" y="-246">DistanceConfirm</name>
+		<location id="id35" x="-408" y="-289">
 		</location>
-		<location id="id8" x="-246" y="-110">
+		<location id="id36" x="-731" y="-289">
 		</location>
-		<location id="id9" x="-459" y="-110">
+		<location id="id37" x="-986" y="-374">
+			<name x="-1028" y="-357">Slow_Down</name>
 		</location>
-		<init ref="id9"/>
-		<transition id="id10">
-			<source ref="id8"/>
-			<target ref="id7"/>
-			<label kind="guard" x="-272" y="-204">distance&gt;50</label>
-			<label kind="synchronisation" x="-178" y="-144">safeDistance!</label>
+		<init ref="id36"/>
+		<transition id="id38">
+			<source ref="id37"/>
+			<target ref="id36"/>
+			<label kind="synchronisation" x="-926" y="-323">SlowDown?</label>
 		</transition>
-		<transition id="id11">
-			<source ref="id9"/>
-			<target ref="id8"/>
-			<label kind="synchronisation" x="-399" y="-136">slowdown?</label>
+		<transition id="id39">
+			<source ref="id36"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="-595" y="-314">initplatoon?</label>
 		</transition>
 	</template>
 	<template>
 		<name>Leader</name>
-		<declaration>int Distance_ahead;</declaration>
-		<location id="id12" x="204" y="-272">
+		<declaration>int distance = 20;</declaration>
+		<location id="id40" x="-1028" y="-170">
 		</location>
-		<location id="id13" x="-76" y="-68">
-			<name x="-86" y="-102">Abort</name>
+		<location id="id41" x="-833" y="-238">
 		</location>
-		<location id="id14" x="-221" y="-221">
-			<name x="-255" y="-255">SlowDown</name>
+		<location id="id42" x="-408" y="17">
+			<name x="-442" y="42">Init_platoon</name>
 		</location>
-		<location id="id15" x="-314" y="-68">
+		<location id="id43" x="-705" y="17">
+			<name x="-731" y="42">Start</name>
 		</location>
-		<location id="id16" x="-501" y="-68">
+		<location id="id44" x="-952" y="25">
 		</location>
-		<location id="id17" x="8" y="-272">
-		</location>
-		<init ref="id16"/>
-		<transition id="id18">
-			<source ref="id17"/>
-			<target ref="id12"/>
-			<label kind="synchronisation" x="68" y="-297">couple!</label>
+		<init ref="id43"/>
+		<transition id="id45">
+			<source ref="id41"/>
+			<target ref="id40"/>
+			<label kind="guard" x="-986" y="-187">distance &gt;=50</label>
+			<label kind="synchronisation" x="-994" y="-246">Keep_Distance!</label>
 		</transition>
-		<transition id="id19">
-			<source ref="id14"/>
-			<target ref="id17"/>
-			<label kind="synchronisation" x="-161" y="-289">safeDistance?</label>
+		<transition id="id46">
+			<source ref="id43"/>
+			<target ref="id41"/>
+			<label kind="guard" x="-790" y="-187">obstacleFront == false</label>
+			<label kind="synchronisation" x="-773" y="-153">SlowDown!</label>
+			<label kind="assignment" x="-815" y="-110">reqCouple = true</label>
 		</transition>
-		<transition id="id20">
-			<source ref="id15"/>
-			<target ref="id13"/>
-			<label kind="guard" x="-263" y="-119">Distance_ahead&lt;50</label>
-			<label kind="synchronisation" x="-221" y="-93">abort!</label>
+		<transition id="id47">
+			<source ref="id44"/>
+			<target ref="id43"/>
+			<label kind="guard" x="-918" y="-42">obstacleFront == false</label>
+			<label kind="synchronisation" x="-884" y="-17">Req_Couple?</label>
 		</transition>
-		<transition id="id21">
-			<source ref="id15"/>
-			<target ref="id14"/>
-			<label kind="guard" x="-399" y="-187">Distance_ahead&gt;50</label>
-			<label kind="synchronisation" x="-246" y="-161">couple!</label>
+		<transition id="id48">
+			<source ref="id42"/>
+			<target ref="id43"/>
+			<label kind="guard" x="-518" y="-161">platoonstatus==false</label>
+			<label kind="synchronisation" x="-484" y="-136">initplatoon!</label>
+			<nail x="-578" y="-212"/>
 		</transition>
-		<transition id="id22">
-			<source ref="id16"/>
-			<target ref="id15"/>
-			<label kind="synchronisation" x="-442" y="-93">Request?</label>
+		<transition id="id49">
+			<source ref="id43"/>
+			<target ref="id42"/>
+			<label kind="synchronisation" x="-603" y="-8">initplatoon!</label>
 		</transition>
 	</template>
 	<system>// Place template instantiations here.
-Process = Leader();
+LeaderTruck = Leader();
+Communication = CommChannel();
+followtruck = FollowingTrucks();
+platoonmanager = PlatoonManager();
 // List one or more processes to be composed into a system.
-system Process,RequestingTruck,FollowingTrucks;
+system LeaderTruck,Communication,FollowingTrucks,platoonmanager,SensorSuite;
 </system>
 	<queries>
 		<query>
