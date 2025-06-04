@@ -285,11 +285,11 @@ def predict_steering(img):
 
     # Example mapping (adjust as needed):
     if pred_label == -1: # Line on Left
-        pred_steering = -0.5 # Steer left
+        pred_steering = -0.9 # Steer left
     elif pred_label == 0: # Line in Center
         pred_steering = 0.0 # Go straight
     elif pred_label == 1: # Line on Right
-        pred_steering = 0.5 # Steer right
+        pred_steering = 0.9 # Steer right
     elif pred_label == 2: 
         pred_steering = 0.0  
     else:
