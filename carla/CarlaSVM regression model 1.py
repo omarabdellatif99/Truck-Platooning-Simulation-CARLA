@@ -33,12 +33,8 @@ PRINT_EVERY_N   = 30           # console frames between logs
 # -----------------------------------------------------------------------------
 
 
-# ------------------------------------------------------------------ STUDENTS --
-import cv2
-import numpy as np
-import os
-import joblib
-import pandas as pd
+
+
 
 # Define a default steer value in case models fail to load or other issues
 DEFAULT_STEER = 0.0
