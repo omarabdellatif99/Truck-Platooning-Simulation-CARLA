@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan Distance;
+chan inDistance;
+chan Safe;
+chan inSafe;
+chan Left;
+chan Right;
+chan turnLeft;
+chan turnRight;</declaration>
+	<template>
+		<name x="5" y="5">Comm_Channel</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-782" y="-42">
+			<name x="-824" y="-17">platooner</name>
+		</location>
+		<location id="id1" x="-884" y="-195">
+			<name x="-918" y="-229">Driving</name>
+		</location>
+		<location id="id2" x="-705" y="-119">
+			<name x="-731" y="-153">Sensor</name>
+		</location>
+		<location id="id3" x="-884" y="-119">
+			<name x="-960" y="-153">CommIdle</name>
+		</location>
+		<init ref="id3"/>
+		<transition id="id4">
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-935" y="-8">Right?</label>
+			<nail x="-884" y="-8"/>
+		</transition>
+		<transition id="id5">
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-833" y="-102">Left?</label>
+		</transition>
+		<transition id="id6">
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<nail x="-952" y="-127"/>
+			<nail x="-935" y="-76"/>
+		</transition>
+		<transition id="id7">
+			<source ref="id3"/>
+			<target ref="id1"/>
+		</transition>
+		<transition id="id8">
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-833" y="-144">Distance?</label>
+		</transition>
+	</template>
+	<template>
+		<name>Leading_Truck</name>
+		<declaration>clock leadtime;
+</declaration>
+		<location id="id9" x="-289" y="59">
+			<name x="-323" y="76">leadRight</name>
+		</location>
+		<location id="id10" x="-289" y="-119">
+			<name x="-299" y="-153">leadLeft</name>
+		</location>
+		<location id="id11" x="-68" y="-34">
+			<name x="-51" y="-42">CommIdle</name>
+		</location>
+		<location id="id12" x="-289" y="-34">
+			<name x="-399" y="-51">Driving</name>
+			<label kind="invariant" x="-442" y="-25">leadtime&lt;=10</label>
+		</location>
+		<init ref="id12"/>
+		<transition id="id13">
+			<source ref="id9"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-178" y="76">Right?</label>
+			<nail x="-263" y="68"/>
+			<nail x="-59" y="68"/>
+		</transition>
+		<transition id="id14">
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-178" y="-144">Left?</label>
+			<nail x="-68" y="-127"/>
+		</transition>
+		<transition id="id15">
+			<source ref="id10"/>
+			<target ref="id12"/>
+			<nail x="-238" y="-93"/>
+		</transition>
+		<transition id="id16">
+			<source ref="id9"/>
+			<target ref="id12"/>
+			<nail x="-263" y="51"/>
+			<nail x="-246" y="34"/>
+		</transition>
+		<transition id="id17">
+			<source ref="id12"/>
+			<target ref="id12"/>
+			<nail x="-331" y="-68"/>
+			<nail x="-331" y="-25"/>
+		</transition>
+		<transition id="id18">
+			<source ref="id12"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-289" y="-22">leadtime&gt;=4</label>
+			<label kind="synchronisation" x="-340" y="8">Right!</label>
+			<label kind="assignment" x="-289" y="12">leadtime=0</label>
+		</transition>
+		<transition id="id19">
+			<source ref="id12"/>
+			<target ref="id10"/>
+			<label kind="guard" x="-289" y="-110">leadtime&gt;=2</label>
+			<label kind="synchronisation" x="-331" y="-93">Left!</label>
+			<label kind="assignment" x="-289" y="-76">leadtime=0</label>
+		</transition>
+		<transition id="id20">
+			<source ref="id12"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-221" y="-93">leadtime&gt;=15</label>
+			<label kind="synchronisation" x="-204" y="-59">Distance!</label>
+			<label kind="assignment" x="-212" y="-25">leadtime=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Following_Trucks</name>
+		<location id="id21" x="-637" y="25">
+			<name x="-714" y="42">TurnRight</name>
+		</location>
+		<location id="id22" x="-637" y="-178">
+			<name x="-647" y="-212">TurnLeft</name>
+		</location>
+		<location id="id23" x="-425" y="-76">
+			<name x="-450" y="-110">CommIdle</name>
+		</location>
+		<location id="id24" x="-637" y="-76">
+			<name x="-731" y="-85">TruckIdle</name>
+		</location>
+		<init ref="id24"/>
+		<transition id="id25">
+			<source ref="id21"/>
+			<target ref="id24"/>
+			<nail x="-697" y="-25"/>
+		</transition>
+		<transition id="id26">
+			<source ref="id22"/>
+			<target ref="id24"/>
+			<nail x="-697" y="-153"/>
+		</transition>
+		<transition id="id27">
+			<source ref="id24"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-629" y="-34">turnRight?</label>
+		</transition>
+		<transition id="id28">
+			<source ref="id24"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="-629" y="-144">turnLeft?</label>
+		</transition>
+		<transition id="id29">
+			<source ref="id24"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="-561" y="-68">Safe?</label>
+		</transition>
+	</template>
+	<template>
+		<name>Obstacle_Manager</name>
+		<location id="id30" x="0" y="0">
+		</location>
+		<init ref="id30"/>
+	</template>
+	<template>
+		<name>Sensor_Suite</name>
+		<location id="id31" x="-425" y="-127">
+			<name x="-459" y="-110">platooner</name>
+		</location>
+		<location id="id32" x="-620" y="-127">
+			<name x="-646" y="-110">Sensor</name>
+		</location>
+		<init ref="id32"/>
+		<transition id="id33">
+			<source ref="id32"/>
+			<target ref="id32"/>
+			<nail x="-671" y="-153"/>
+			<nail x="-663" y="-110"/>
+		</transition>
+		<transition id="id34">
+			<source ref="id32"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-569" y="-153">inDistance!</label>
+		</transition>
+	</template>
+	<template>
+		<name>Platoon_Manager</name>
+		<location id="id35" x="-595" y="0">
+			<name x="-629" y="17">TurnRight</name>
+		</location>
+		<location id="id36" x="-561" y="-229">
+			<name x="-586" y="-263">TurnLeft</name>
+		</location>
+		<location id="id37" x="-263" y="-170">
+			<name x="-297" y="-204">TruckIdle</name>
+		</location>
+		<location id="id38" x="-340" y="-119">
+			<name x="-365" y="-102">Trucks</name>
+		</location>
+		<location id="id39" x="-586" y="-119">
+			<name x="-722" y="-136">platooner</name>
+		</location>
+		<init ref="id39"/>
+		<transition id="id40">
+			<source ref="id35"/>
+			<target ref="id37"/>
+			<nail x="-229" y="-8"/>
+		</transition>
+		<transition id="id41">
+			<source ref="id36"/>
+			<target ref="id37"/>
+		</transition>
+		<transition id="id42">
+			<source ref="id39"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="-680" y="-68">turnRight!</label>
+		</transition>
+		<transition id="id43">
+			<source ref="id39"/>
+			<target ref="id36"/>
+			<label kind="synchronisation" x="-671" y="-212">turnLeft!</label>
+		</transition>
+		<transition id="id44">
+			<source ref="id39"/>
+			<target ref="id39"/>
+			<nail x="-629" y="-153"/>
+			<nail x="-637" y="-110"/>
+		</transition>
+		<transition id="id45">
+			<source ref="id38"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="-306" y="-136">Safe!</label>
+		</transition>
+		<transition id="id46">
+			<source ref="id39"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-501" y="-144">inDistance?</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+CommunicationChannel = Comm_Channel();
+FollowingTrucks = Following_Trucks();
+ObstacleManager = Obstacle_Manager();
+SensorSuite = Sensor_Suite();
+PlatoonManager = Platoon_Manager();
+LeadingTruck = Leading_Truck();
+// List one or more processes to be composed into a system.
+system LeadingTruck,CommunicationChannel,FollowingTrucks,SensorSuite,PlatoonManager;
+</system>
+	<queries>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+	</queries>
+</nta>
